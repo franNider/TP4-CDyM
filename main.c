@@ -5,7 +5,7 @@
 #include <avr/interrupt.h>
 #include "timer.h"
 #include "serialPort.h"
-
+#include <stdlib.h>
 #define BR9600 (0x67)  // 0x67=103 configura BAUDRATE=9600@16MHz
 
 void adc_init();
@@ -15,6 +15,7 @@ uint8_t adc_read();
 volatile char RX_Buffer = 0;     // Buffer para recepci?n de datos
 volatile uint8_t color = 0;
 
+uint16_t red_value= 62000;
 
 int main(void)
 {
@@ -36,24 +37,25 @@ int main(void)
 	SerialPort_RX_Interrupt_Enable();  // Habilita la interrupci?n de recepci?n del puerto serie
 
 	adc_init();
-	uint8_t adc_value;
 	
+	uint8_t adc_value;
+
 	while (1)
 	{
 		if ( color == 1 ){
 			adc_value = adc_read();
-			SerialPort_Send_Data(adc_value);
-			PWM_delta = (255 - adc_value)* 62500 / 255 ;
+			red_value=255 - adc_value;
+			setColorRojo(red_value);
 		}
 		if ( color == 2 ){
 			adc_value = adc_read();
 			SerialPort_Send_Data(adc_value);
-			OCR1B = 255 - adc_value;
+			OCR1B = 255-adc_value;
 		}
 		if ( color == 3 ){
 			adc_value = adc_read();
 			SerialPort_Send_Data(adc_value);
-			OCR1A = 255 - adc_value; 
+			OCR1A = 255-adc_value; 
 		}
 	}
 }
@@ -93,4 +95,8 @@ ISR (USART_RX_vect){
 	if (RX_Buffer=='f' || RX_Buffer=='F'){
 		color=0;
 	}
+}
+
+ISR (TIMER0_COMPA_vect){   //llamada cada 1mS
+	PWMsoft();
 }

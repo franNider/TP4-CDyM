@@ -1,9 +1,9 @@
 #include "timer.h"
-#define PWM_PERIOD 62500  
+#define PWM_PERIOD 255  
 #define PWM_OFF PORTB &= ~(1<<PORTB5);
 #define PWM_ON PORTB |= (1<<PORTB5);
 
-volatile uint16_t PWM_delta = 62000;
+volatile uint16_t PWM_delta = 100;
 
 void timer1_init(void) {
 	TCCR1B |= (1 << WGM12);  // Modo fast PWM 5 , 8 bits, no inv
@@ -14,10 +14,14 @@ void timer1_init(void) {
 }
 
 void timer0_init(void) {											
-	TCCR0A |= (1 << WGM01);  // Modo fast PWM 5 , 8 bits, no inv
+	TCCR0A |= (1 << WGM01);  
 	TCCR0B |= (1 << CS01) | (1 << CS00); // Prescaler 64
-	OCR0A = 249;  
+	OCR0A = 1;  
 	TIMSK0 |= (1 << OCIE0A);
+}
+
+void setColorRojo(uint16_t red_value){
+	PWM_delta = red_value;
 }
 
 void PWMsoft(){
@@ -32,11 +36,5 @@ void PWMsoft(){
 	else{
 		PWM_OFF;
 	}
-	
-	
 }
 
-ISR (TIMER0_COMPA_vect){   //llamada cada 1mS
-	PWMsoft();
-
-}
