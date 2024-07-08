@@ -7,9 +7,6 @@
 
 #include "SerialPort.h"
 
-
-volatile uint8_t flagLibre = 0;
-
 // ------ Definiciones de Funciones Públicas -------------------
 
 // Inicialización de Puerto Serie
@@ -71,12 +68,9 @@ void SerialPort_Send_String(char * msg){ //msg -> "Hola como andan hoy?" 20 ASCI
 	uint8_t i = 0;
 	//'\0' = 0x00
 	while(msg[i]){ // *(msg+i)
-		if (flagLibre){
-			SerialPort_Send_Data(msg[i]);
-			i++;
-			flagLibre = 0;
-			SerialPort_TX_Interrupt_Enable();
-		}
+		SerialPort_Wait_For_TX_Buffer_Free(); //9600bps formato 8N1, 10bits, 10.Tbit=10/9600=1ms 
+		SerialPort_Send_Data(msg[i]);
+		i++;
 	}
 }
 

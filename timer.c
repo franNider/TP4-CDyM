@@ -1,8 +1,9 @@
 #include "timer.h"
-#define PWM_PERIOD 62500   // --- 100%
-#define PWM_DELTA 62000    // x---porciento querido
+#define PWM_PERIOD 62500  
 #define PWM_OFF PORTB &= ~(1<<PORTB5);
 #define PWM_ON PORTB |= (1<<PORTB5);
+
+volatile uint16_t PWM_delta = 62000;
 
 void timer1_init(void) {
 	TCCR1B |= (1 << WGM12);  // Modo fast PWM 5 , 8 bits, no inv
@@ -25,7 +26,7 @@ void PWMsoft(){
 		PWM_pos = 0;
 	}
 	
-	if (PWM_pos < PWM_DELTA){
+	if (PWM_pos < PWM_delta){
 		PWM_ON;
 	}
 	else{
