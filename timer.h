@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <avr/interrupt.h>
 
-//extern volatile uint16_t PWM_delta;
 void setColorRojo(uint16_t );
 void timer1_init(void);
 void timer0_init(void);
