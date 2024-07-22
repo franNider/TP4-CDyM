@@ -13,7 +13,7 @@
 volatile char RX_Buffer = 0;     // Buffer para recepción de datos
 volatile uint8_t color = 0;      // Variable para almacenar el color seleccionado
 
-uint16_t red_value= 62000;       // Variable para almacenar el valor del color rojo
+uint16_t red_value= 100;       // Variable para almacenar el valor del color rojo
 
 int main(void)
 {
