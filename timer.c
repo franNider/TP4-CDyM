@@ -38,3 +38,6 @@ void PWMsoft(){
 	}
 }
 
+ISR (TIMER0_COMPA_vect){   //llamada cada 1mS
+	PWMsoft();
+}
